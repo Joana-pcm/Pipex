@@ -1,0 +1,27 @@
+#include "../inc/pipex.h"
+
+int	main(int ac, char **av, char **envp)
+{
+	int	i;
+	int pipefd[2];
+	int	pid;
+	char *args[] = {"ls", "-l", NULL};
+
+	(void) pid;
+	(void) pipefd;
+	(void) envp;
+	i = 1;
+	if (ft_strncmp(av[i], "here_doc", (unsigned int)8))
+		i++;
+	if (access(av[i], F_OK) == 0)
+	{
+		printf("hello\n");
+		execve("/bin/", , NULL);
+	//	pid = fork();
+	//	pipe(pipefd);
+		if (access(av[ac - 1], F_OK) == -1)
+			return 0;	
+	}
+	else
+		return 0;
+}

@@ -1,6 +1,6 @@
 NAME = pipex
 
-SRC = src/pipex.c
+SRC = src/pipex.c src/valid.c
 
 OBJS = ${SRC:.c=.o}
 
@@ -12,6 +12,7 @@ MAKE = make -C
 LIBFT_PATH = libft
 LIBFT = -L ${LIBFT_PATH} -lft
 
+#To check on child processes:
 #valgrind --leak-check=full --trace-children=yes
 
 %.o: %.c
