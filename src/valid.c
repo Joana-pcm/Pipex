@@ -16,29 +16,28 @@ int	valid_input(t_pipex **pipex, char **av, int size)
 
 int	valid_cmds(t_pipex **pipex, char **av, char **envp, int size)
 {
-	int	i;
-	int j;
-	int	n;
+	int		i;
+	int		j;
+	int		n;
 	char	**temp;
+	char	**paths;
 
 	n = -1;
 	j = -1;
 	i = 1 + ((*pipex)->here_doc);
 	while (envp[++j])
-		if (!ft_strnstr(envp[j], "PATH=", 5) && !envp[j][6])
-			return (0);
+		if (ft_strnstr(envp[j], "PATH=", 5))
+			(*pipex)->paths = ft_split(&envp[j][5], ':');
 	j = -1;
-	while (av[++i] && envp[++j])
+	while (paths[++j] && i < size - 1)
 	{
-		if (ft_strnstr(envp[j], av[i], ft_strlen(envp[j])))
-		{
+			temp = ft_split(av[++i], ' ');
 			(*pipex)->cmds[++n] = ft_strdup(av[i]);
-			(*pipex)->paths[n] = ft_strjoin(envp[j], "/");
-			temp = ft_split(av[i], ' ');
-			(*pipex)->paths[n] = ft_strjoin(envp[j], temp[0]);	
-		}
+			(*pipex)->paths[n] = ft_strjoin(paths[j], "/");
+			(*pipex)->paths[n] = ft_strjoin(paths[j], temp[0]);
+			if (!access((*pipex)->paths[n], F_OK))
+				free_error(pipex, "ERROR");
 	}
-	(void) size;
 	return (1);
 }
 

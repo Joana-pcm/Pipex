@@ -1,6 +1,6 @@
 NAME = pipex
 
-SRC = src/pipex.c src/valid.c
+SRC = src/pipex.c src/valid.c src/main.c
 
 OBJS = ${SRC:.c=.o}
 
@@ -15,14 +15,14 @@ LIBFT = -L ${LIBFT_PATH} -lft
 #To check on child processes:
 #valgrind --leak-check=full --trace-children=yes
 
+all:	${NAME}
+
 %.o: %.c
 			@${CC} ${CFLAGS} ${INCLUDE} -o $@ -c $<
 
 $(NAME): ${OBJS}
 			@${MAKE} ${LIBFT_PATH} all
 					@${CC} ${OBJS} ${LIBFT} -o ${NAME}
-
-all:	${NAME}
 
 clean:
 			@${MAKE} ${LIBFT_PATH} clean

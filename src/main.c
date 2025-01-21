@@ -31,11 +31,8 @@ int	main(int ac, char **av, char **envp)
 	while (++i < ac - 1)
 	{
 		printf("loop");
-		exec(&pipex, av, ac, envp);
+		exec(&pipex, av, envp, ac);
 	}
-	(void) av;
-	(void) envp;
-	(void) ac;
-//	free_error(pipex, "SUCCESS");
+	/*free_error(pipex, "SUCCESS");*/
 	return (0);
 }

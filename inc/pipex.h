@@ -16,10 +16,14 @@ typedef	struct	s_pipex
 }	t_pipex;
 
 void	init_pipex(t_pipex **pipex);
+/*		HANDLE ERRORS		*/
 int	valid_input(t_pipex **pipex, char **av, int size);
 int	valid_cmds(t_pipex **pipex, char **av, char **envp, int size);
 int	valid_args(t_pipex **pipex, char **av,char **envp, int size);
 int	free_error(t_pipex **pipex, char *error);
-
+/*		EXECUTE		*/
+int	exec(t_pipex **pipex, char **av, char **envp, int size);
+int	parent_process(t_pipex **pipex, char **av, char **envp);
+int	child_process(t_pipex **pipex, char **av, char **envp);
 
 #endif
