@@ -31,7 +31,7 @@ int	main(int ac, char **av, char **envp)
 	while (++i < ac - 1)
 	{
 		printf("loop");
-		//ft_exec(pipex, av, ac, envp);
+		exec(&pipex, av, ac, envp);
 	}
 	(void) av;
 	(void) envp;
