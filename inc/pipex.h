@@ -9,7 +9,8 @@
 
 typedef	struct	s_pipex
 {
-	int		fd[2];
+	int		in_fd;
+	int		out_fd;
 	int		here_doc;
 	char	**paths;
 	char	**cmds;
@@ -27,8 +28,8 @@ int	free_error(t_pipex **pipex, char *error);
 
 /*		EXECUTE		*/
 
-int	exec(t_pipex **pipex, char **av, char **envp, int size);
-int	parent_process(t_pipex **pipex, char **av, char **envp);
-int	child_process(t_pipex **pipex, char **av, char **envp);
+int	exec(t_pipex **pipex, char **envp);
+int	parent_process(t_pipex **pipex, char **envp, int *fd);
+int	child_process(t_pipex **pipex, char **envp, int *fd);
 
 #endif

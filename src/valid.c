@@ -25,7 +25,7 @@ int	valid_input(t_pipex **pipex, char **av, int size)
 		return (0);
 	if (access(av[i], F_OK) == -1 && (*pipex)->here_doc != 1)
 		return (0);
-	open(av[size - 1], O_RDONLY | O_CREAT);
+	open(av[size - 1], O_WRONLY | O_CREAT , 0777);
 	return (1);
 }
 
@@ -65,16 +65,18 @@ int	setcmds(t_pipex  **pipex, char **av, char **paths, int size)
 			&& ++n)
 			j = -1;
 	}
-	if (access((*pipex)->paths[i], F_OK) == -1)
+	(*pipex)->cmds[n + 1] = NULL;
+	if (access((*pipex)->paths[i - 1], F_OK) == -1)
 		return (0);
-	return (((i != n)));
+	return (((i == n)));
 }
 
 int	free_error(t_pipex **pipex, char *error)
 {
+	printf("%s\n", error);
 	(void) pipex;
 	(void) error;
-	return (2);
+	return (5);
 }
 
 int	valid_args(t_pipex **pipex, char **av,char **envp, int size)
@@ -83,5 +85,5 @@ int	valid_args(t_pipex **pipex, char **av,char **envp, int size)
 	(void) av;
 	(void) envp;
 	(void) size;
-	return 2;
+	return 4;
 }

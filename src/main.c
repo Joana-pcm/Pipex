@@ -5,11 +5,11 @@ void	init_pipex(t_pipex **pipex, int size)
 	(*pipex) = malloc(sizeof(t_pipex));
 	if (!(*pipex))
 		return ;
-	(*pipex)->fd[0] = -1;
-	(*pipex)->fd[1] = -1;
+	(*pipex)->in_fd = -1;
+	(*pipex)-> out_fd = -1;
 	(*pipex)->here_doc = 0;
 	(*pipex)->paths = malloc(sizeof(char *) * size - 2);
-	(*pipex)->cmds = malloc(sizeof(char *) * size - 2);
+	(*pipex)->cmds = malloc(sizeof(char *) * size - 1);
 	if (!(*pipex)->paths || !(*pipex)->cmds)
 		return ;
 }
@@ -27,16 +27,13 @@ int	main(int ac, char **av, char **envp)
 		return (free_error(&pipex, "ERROR: Command Not Found"));
 	if (!valid_args(&pipex, av, envp, ac))
 		return (free_error(&pipex, "ERROR: Invalid Arguments"));
-	i = 1;
-	int j = 0;
-	while (++i < ac - 1)
-	{
-		printf("%s\n", pipex->cmds[j]);
-		printf("%s\n", pipex->paths[j]);
-		/*printf("loop");*/
-		++j;
-	}
-	exec(&pipex, av, envp, ac);
+	i = -1;
+	pipex->in_fd = open(av[1], O_RDONLY, 0777);
+	pipex->out_fd = open(av[ac - 1], O_WRONLY, 0777);
+		exec(&pipex, envp);
+	i = -1;
+	while(++i < ac -2)
+		wait(NULL);
 	/*free_error(pipex, "SUCCESS");*/
 	return (0);
 }
