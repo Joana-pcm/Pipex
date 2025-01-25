@@ -30,10 +30,9 @@ int	main(int ac, char **av, char **envp)
 	i = -1;
 	pipex->in_fd = open(av[1], O_RDONLY, 0777);
 	pipex->out_fd = open(av[ac - 1], O_WRONLY, 0777);
-		exec(&pipex, envp);
 	i = -1;
 	while(++i < ac -2)
-		wait(NULL);
+		exec(&pipex, envp, i, (ac - 1));
 	/*free_error(pipex, "SUCCESS");*/
 	return (0);
 }
