@@ -1,16 +1,17 @@
-#ifndef	PIPEX_H
-# define PIPEX_H
+#ifndef	PIPEX_BONUS_H
+# define PIPEX_BONUS_H
 
 # include <stdio.h>
 # include <unistd.h>
 # include <sys/wait.h>
 # include <sys/types.h>
-# include "../libft/libft.h"
+# include "../../libft/libft.h"
 
 typedef	struct	s_pipex
 {
 	int		in_fd;
 	int		out_fd;
+	int		here_doc;
 	char	**paths;
 	char	**cmds;
 }	t_pipex;

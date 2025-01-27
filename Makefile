@@ -2,7 +2,12 @@ NAME = pipex
 
 SRC = src/pipex.c src/valid.c src/main.c
 
+BONUS = bonus/src/pipex_bonus.c bonus/src/valid_bonus.c \
+		bonus/src/main.c
+
 OBJS = ${SRC:.c=.o}
+
+OBJS_BONUS = ${BONUS:.c=.o}
 
 CC = cc
 RM = rm -f
@@ -24,9 +29,14 @@ $(NAME): ${OBJS}
 			@${MAKE} ${LIBFT_PATH} all
 					@${CC} ${OBJS} ${LIBFT} -o ${NAME}
 
+bonus:	${OBJS_BONUS}
+			@${MAKE} ${LIBFT_PATH} all
+					@${CC} ${OBJS_BONUS} ${LIBFT} -o ${NAME}_bonus
+
+
 clean:
 			@${MAKE} ${LIBFT_PATH} clean
-					@${RM} ${OBJS}
+					@${RM} ${OBJS} ${OBJS_BONUS}
 
 fclean: clean
 			@${MAKE} ${LIBFT_PATH} fclean
