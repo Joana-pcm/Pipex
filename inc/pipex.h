@@ -19,7 +19,7 @@ void	init_pipex(t_pipex **pipex, int size);
 
 /*		HANDLE ERRORS		*/
 
-int	valid_input(t_pipex **pipex, char **av, int size);
+int	valid_input(t_pipex **pipex, char **av, char **envp, int size);
 int	valid_cmds(t_pipex **pipex, char **av, char **envp, int size);
 int	valid_args(t_pipex **pipex, char **av,char **envp, int size);
 int	setcmds(t_pipex  **pipex, char **av, char **paths, int size);
@@ -27,7 +27,7 @@ int	free_error(t_pipex **pipex, char *error);
 
 /*		EXECUTE		*/
 
-int	exec(t_pipex **pipex, char **envp, int	index, int size);
-int	child_process(t_pipex **pipex, char **envp, int *fd, int index, int size);
+int	exec(t_pipex **pipex, char **envp, int size);
+int	child_process(t_pipex **pipex, char **envp, int size);
 
 #endif

@@ -10,9 +10,9 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../inc/pipex_bonus.h"
+#include "../inc/pipex.h"
 
-int	valid_input(t_pipex **pipex, char **av, int size)
+int	valid_input(t_pipex **pipex, char **av, char **envp, int size)
 {
 	int		j;
 	char	**paths;

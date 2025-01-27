@@ -3,7 +3,7 @@ NAME = pipex
 SRC = src/pipex.c src/valid.c src/main.c
 
 BONUS = bonus/src/pipex_bonus.c bonus/src/valid_bonus.c \
-		bonus/src/main.c
+		bonus/src/main_bonus.c
 
 OBJS = ${SRC:.c=.o}
 

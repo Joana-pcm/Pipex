@@ -1,4 +1,16 @@
-#include "../inc/pipex_bonus.h"
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   main.c                                             :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: jpatrici <jpatrici@student.42porto.com>    +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2025/01/27 10:19:01 by jpatrici          #+#    #+#             */
+/*   Updated: 2025/01/27 10:19:08 by jpatrici         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
+#include "../inc/pipex.h"
 
 void	init_pipex(t_pipex **pipex, int size)
 {
@@ -16,17 +28,16 @@ void	init_pipex(t_pipex **pipex, int size)
 int	main(int ac, char **av, char **envp)
 {
 	t_pipex	*pipex;
-	int		i;
 
 	pipex = NULL;
 	init_pipex(&pipex, ac);
-	if (!valid_input(&pipex, av, ac))
+	if (!valid_input(&pipex, av, envp, ac))
 		return (free_error(&pipex, "ERROR: Invalid Input"));
 	if (!valid_args(&pipex, av, envp, ac))
 		return (free_error(&pipex, "ERROR: Invalid Arguments"));
 	pipex->in_fd = open(av[1], O_RDONLY, 0777);
 	pipex->out_fd = open(av[4], O_WRONLY | O_CREAT, 0777);
-	exec(&pipex, envp, i, (ac - 1));
+	exec(&pipex, envp, (ac - 1));
 	/*free_error(pipex, "SUCCESS");*/
 	return (0);
 }
