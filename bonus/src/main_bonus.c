@@ -31,7 +31,7 @@ int	main(int ac, char **av, char **envp)
 	pipex->in_fd = open(av[1], O_RDONLY, 0777);
 	pipex->out_fd = open(av[ac - 1], O_WRONLY, 0777);
 	i = 0;
-	child_process(&pipex, envp, i, (ac - 1));
+	main_process(&pipex, envp, i, (ac - 1));
 	/*free_error(pipex, "SUCCESS");*/
 	return (0);
 }

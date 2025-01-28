@@ -18,26 +18,31 @@
 /*	return (0);*/
 /*}*/
 
-int	child_process(t_pipex **pipex, char **envp, int index, int size)
+int	main_process(t_pipex **pipex, char **envp, int index, int size)
 {
 	pid_t	pid;
 	int		fd[2];
 
-	pid = fork();
 	if (pipe(fd) == -1)
 		free_error(pipex, "ERROR: Incapable of creating pipe");
+	pid = fork();
+	if (pid < 0)
+		free_error(pipex, "ERROR: PID error");
 	if (pid == 0)
-	{
-		close(fd[0]);
-		if (index == 0)
-			dup2((*pipex)->in_fd, STDIN_FILENO);
-		if (index == size)
-			dup2((*pipex)->out_fd, STDOUT_FILENO);
-		else
-			dup2(fd[1], STDOUT_FILENO);
-	}
-	else 
+	{	
+		close(fd[1]);
 		dup2(fd[0], STDIN_FILENO);
+		child_process(pipex, envp, fd, index, size);
+	}
+	/*else */
+	/*	dup2(fd[0], STDIN_FILENO);	*/
+	if (index < size)
+		main_process(pipex, envp, index + 1, size);
+	return (0);
+}
+
+int	child_process(t_pipex **pipex, char **envp,int *fd, int index, int size)
+{
 	if ((*pipex)->paths[index])
 		execve((*pipex)->paths[index], \
 	  ft_split((*pipex)->cmds[index], ' '), envp);
@@ -47,7 +52,7 @@ int	child_process(t_pipex **pipex, char **envp, int index, int size)
 		close(fd[0]);
 		return (0);
 	}
-	child_process(pipex, envp, (index + 1), size);
+	(void) size;
+	(void) fd;
 	return (0);
 }
-
