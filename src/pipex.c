@@ -10,49 +10,60 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../inc/pipex.h"
+#include "../inc/pipex_bonus.h"
+#include <unistd.h>
 
-int	exec(t_pipex **pipex, char **envp, int size)
+int	exec(t_pipex **pipex, char **envp, int index, int size)
+{
+	char **temp;
+
+	temp = ft_split((*pipex)->cmds[index], ' ');
+	if (!temp)
+		free_error(pipex, "Could not create array");
+	execve((*pipex)->paths[index], temp, envp);
+	(void)	size;
+	return (0);
+}
+
+int	main_process(t_pipex **pipex, char **envp, int index, int size)
 {
 	pid_t	pid;
-	int		*fd;
+	pid_t	pid2;
+	int		fd[2];
 
-	fd = NULL;
 	if (pipe(fd) == -1)
-		free_error(pipex, "ERROR: Incapable of creating pipe");
+		free_error(pipex, )
 	pid = fork();
 	if (pid == -1)
+		exit(0);
+	if (pid > 0)
 	{
 		close(fd[0]);
+		dup2(fd[1], STDOUT_FILENO);
 		close(fd[1]);
-		free_error(pipex, "ERROR");
+		exec(pipex, envp, index, size);
 	}
-	if (pid == 0)
+	pid2 = fork();
+	if (pid2 == -1)
+		exit(0);
+	if (pid2 > 0)
 	{
-		child_process(pipex, envp, fd, size);
-	}
-	else
 		dup2(fd[0], STDIN_FILENO);
+		close(fd[0]);
+		close(fd[1]);
+		exec(pipex, envp, index + 1, size);
+	}
+		close(fd[1]);
+		close(fd[0]);
 	waitpid(pid, NULL, 0);
-	return (0);
+	waitpid(pid2, NULL, 0);
+	return (1);
 }
 
-int	child_process(t_pipex **pipex, char **envp, int *fd, int size)
-{
-		if (index == 0)
-			dup2((*pipex)->in_fd, STDIN_FILENO);
-		if (index == size)
-			dup2((*pipex)->out_fd, STDOUT_FILENO);
-		else
-			dup2(fd[1], STDOUT_FILENO);
-		if ((*pipex)->paths[0])
-			execve((*pipex)->paths[0], ft_split((*pipex)->cmds[0], ' '), envp);
-		else
-		{
-			close(fd[1]);
-			close(fd[0]);
-		}
-	return (0);
-}
-
-int	child_process2(t_pipex **pipex, char **envp, int fd, int index, int size)
+/*int	child_process(t_pipex **pipex, char **envp,int *fd, int index, int size)*/
+/*{*/
+/*	return(execve((*pipex)->paths[index], \*/
+/*	  ft_split((*pipex)->cmds[index], ' '), envp));*/
+/*	(void) size;*/
+/*	(void) fd;*/
+/*}*/

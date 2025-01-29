@@ -18,7 +18,7 @@ void	init_pipex(t_pipex **pipex, int size)
 int	main(int ac, char **av, char **envp)
 {
 	t_pipex	*pipex;
-	int		i;
+	/*int		i;*/
 
 	pipex = NULL;
 	init_pipex(&pipex, ac);
@@ -33,9 +33,7 @@ int	main(int ac, char **av, char **envp)
 	dup2(pipex->in_fd, 0);
 	/*printf("here\n");*/
 	dup2(pipex->out_fd, 1);
-	i = -1;
-	while (++i < ac - 1)
-		main_process(&pipex, envp, i, (ac - 1));
+	main_process(&pipex, envp, 0, (ac - 1));
 	/*exec(&pipex, envp, i, ac - 1);*/
 	/*free_error(pipex, "SUCCESS");*/
 	return (0);

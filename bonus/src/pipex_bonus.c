@@ -32,11 +32,10 @@ int	exec(t_pipex **pipex, char **envp, int index, int size)
 int	main_process(t_pipex **pipex, char **envp, int index, int size)
 {
 	pid_t	pid;
+	pid_t	pidn;
 	pid_t	pid2;
 	int		fd[2];
-	/*int	status;*/
 
-	/*status = 0;*/
 	if (pipe(fd) == -1)
 		exit(0);
 	pid = fork();
@@ -44,40 +43,39 @@ int	main_process(t_pipex **pipex, char **envp, int index, int size)
 		exit(0);
 	if (pid > 0)
 	{
-		//child process 1
 		close(fd[0]);
 		dup2(fd[1], STDOUT_FILENO);
 		close(fd[1]);
-		printf("before\n");
 		exec(pipex, envp, index, size);
-		printf("after\n");
+	}
+	while (++index <= size - 4)
+	{
+		pidn = fork();
+		if (pidn == -1)
+			exit (0);
+		if (pidn > 0)
+		{
+			dup2(fd[0], STDIN_FILENO);
+			close(fd[0]);
+			close(fd[1]);
+			exec(pipex, envp, index, size);
+		}
+		waitpid(pidn, NULL, 0);
 	}
 	pid2 = fork();
 	if (pid2 == -1)
 		exit(0);
 	if (pid2 > 0)
 	{
-		//child process 2
 		dup2(fd[0], STDIN_FILENO);
 		close(fd[0]);
 		close(fd[1]);
-		exec(pipex, envp, index + 1, size);
+		exec(pipex, envp, index, size);
 	}
-	/*else */
-	/*{*/
-		//main process
-		close(fd[1]);
-		close(fd[0]);
-	/*}*/
+	close(fd[1]);
+	close(fd[0]);
 	waitpid(pid, NULL, 0);
 	waitpid(pid2, NULL, 0);
-	(void) pipex;
-	(void) envp;
-	(void) index;
-	(void) size;
-	/*while (waitpid(pid, NULL, 0) > 0)*/
-	/*	;*/
-	/*main_process(pipex, envp, index + 1, size);*/
 	return (1);
 }
 
