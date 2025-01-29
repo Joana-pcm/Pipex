@@ -66,12 +66,12 @@ int	setcmds(t_pipex  **pipex, char **av, char **paths, int size)
 	(*pipex)->cmds[n + 1] = NULL;
 	if (access((*pipex)->paths[i - 1], F_OK) == -1)
 		return (0);
-	return (((size - (i + 1)) == n));
+	return (((size - (i + 1) == n)));
 }
 
 int	free_error(t_pipex **pipex, char *error)
 {
-	printf("%s\n", error);
+	printf("wtf fuck off %s\n", error);
 	(void) pipex;
 	(void) error;
 	return (5);
