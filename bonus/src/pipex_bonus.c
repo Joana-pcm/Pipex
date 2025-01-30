@@ -28,52 +28,68 @@ int	exec(t_pipex **pipex, char **envp, int index, int size)
 	(void)	size;
 	return (0);
 }
-
+\
 int	main_process(t_pipex **pipex, char **envp, int index, int size)
 {
 	pid_t	pid;
 	pid_t	pidn;
 	pid_t	pid2;
-	int		fd[2];
+	int		**fd;
+	int		n;
 
-	if (pipe(fd) == -1)
+	n = -1;
+	fd = malloc(sizeof(int *) * (size - 1));
+	while (++n <=  size - 2)
+		fd[n] = malloc(sizeof(int) * 2);
+
+	n = 0;
+	if (pipe(fd[n]) == -1)
 		exit(0);
 	pid = fork();
 	if (pid == -1)
 		exit(0);
 	if (pid > 0)
 	{
-		close(fd[0]);
-		dup2(fd[1], STDOUT_FILENO);
-		close(fd[1]);
+		close(fd[n][0]);
+		dup2(fd[n][1], STDOUT_FILENO);
+		close(fd[n][1]);
 		exec(pipex, envp, index, size);
 	}
 	while (++index <= size - 4)
-	{
+	{	
+		if (pipe(fd[++n]) == -1)
+			exit(0);
 		pidn = fork();
 		if (pidn == -1)
 			exit (0);
 		if (pidn > 0)
 		{
-			dup2(fd[0], STDIN_FILENO);
-			close(fd[0]);
-			close(fd[1]);
+			dup2(fd[n][0], STDIN_FILENO);
+			close(fd[n][0]);
+			dup2(fd[n][1], STDOUT_FILENO);
+			close(fd[n][1]);
 			exec(pipex, envp, index, size);
 		}
 		waitpid(pidn, NULL, 0);
 	}
+	if (pipe(fd[++n]) == -1)
+		exit(0);
 	pid2 = fork();
 	if (pid2 == -1)
 		exit(0);
 	if (pid2 > 0)
 	{
-		dup2(fd[0], STDIN_FILENO);
-		close(fd[0]);
-		close(fd[1]);
+		dup2(fd[n][0], STDIN_FILENO);
+		close(fd[n][0]);
+		close(fd[n][1]);
 		exec(pipex, envp, index, size);
 	}
-	close(fd[1]);
-	close(fd[0]);
+	n = -1;
+	while (fd[++n])
+	{
+		close(fd[n][0]);
+		close(fd[n][1]);
+	}
 	waitpid(pid, NULL, 0);
 	waitpid(pid2, NULL, 0);
 	return (1);
