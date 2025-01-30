@@ -10,10 +10,9 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../inc/pipex_bonus.h"
-#include <unistd.h>
+#include "../inc/pipex.h"
 
-int	exec(t_pipex **pipex, char **envp, int index, int size)
+int	exec(t_pipex **pipex, char **envp, int index)
 {
 	char **temp;
 
@@ -21,7 +20,6 @@ int	exec(t_pipex **pipex, char **envp, int index, int size)
 	if (!temp)
 		free_error(pipex, "Could not create array");
 	execve((*pipex)->paths[index], temp, envp);
-	(void)	size;
 	return (0);
 }
 
@@ -32,7 +30,7 @@ int	main_process(t_pipex **pipex, char **envp, int index, int size)
 	int		fd[2];
 
 	if (pipe(fd) == -1)
-		free_error(pipex, )
+		free_error(pipex, "ERROR");
 	pid = fork();
 	if (pid == -1)
 		exit(0);
@@ -41,7 +39,7 @@ int	main_process(t_pipex **pipex, char **envp, int index, int size)
 		close(fd[0]);
 		dup2(fd[1], STDOUT_FILENO);
 		close(fd[1]);
-		exec(pipex, envp, index, size);
+		exec(pipex, envp, index);
 	}
 	pid2 = fork();
 	if (pid2 == -1)
@@ -51,12 +49,13 @@ int	main_process(t_pipex **pipex, char **envp, int index, int size)
 		dup2(fd[0], STDIN_FILENO);
 		close(fd[0]);
 		close(fd[1]);
-		exec(pipex, envp, index + 1, size);
+		exec(pipex, envp, index + 1);
 	}
-		close(fd[1]);
-		close(fd[0]);
+	close(fd[1]);
+	close(fd[0]);
 	waitpid(pid, NULL, 0);
 	waitpid(pid2, NULL, 0);
+	(void) size;
 	return (1);
 }
 

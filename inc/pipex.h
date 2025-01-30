@@ -29,5 +29,6 @@ int	free_error(t_pipex **pipex, char *error);
 
 int	exec(t_pipex **pipex, char **envp, int size);
 int	child_process(t_pipex **pipex, char **envp, int size);
+int	main_process(t_pipex **pipex, char **envp, int index, int size);
 
 #endif

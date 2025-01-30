@@ -40,7 +40,7 @@ clean:
 
 fclean: clean
 			@${MAKE} ${LIBFT_PATH} fclean
-					@${RM} ${NAME}
+					@${RM} ${NAME} ${NAME}_bonus
 					@echo "all clean"
 
 re: fclean all
