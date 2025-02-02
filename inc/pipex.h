@@ -24,6 +24,7 @@ int	valid_cmds(t_pipex **pipex, char **av, char **envp, int size);
 int	valid_args(t_pipex **pipex, char **av,char **envp, int size);
 int	setcmds(t_pipex  **pipex, char **av, char **paths, int size);
 int	free_error(t_pipex **pipex, char *error);
+int	free_array(char **arr);
 
 /*		EXECUTE		*/
 

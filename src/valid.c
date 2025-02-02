@@ -50,7 +50,8 @@ int	setcmds(t_pipex  **pipex, char **av, char **paths, int size)
 			&& ++n)
 			j = -1;
 	}
-	(*pipex)->cmds[n + 1] = NULL;
+	j = (((*pipex)->cmds[n + 1] = NULL) && free_array(paths));
+	free(temp);
 	if (access((*pipex)->paths[i - 1], F_OK) == -1)
 		return (0);
 	return (((i == n)));
@@ -58,17 +59,19 @@ int	setcmds(t_pipex  **pipex, char **av, char **paths, int size)
 
 int	free_error(t_pipex **pipex, char *error)
 {
-	printf("%s\n", error);
-	(void) pipex;
-	(void) error;
-	return (5);
+	free_array((*pipex)->paths);
+	free_array((*pipex)->cmds);
+	perror(error);
+	return (0);
 }
 
-int	valid_args(t_pipex **pipex, char **av,char **envp, int size)
+int	free_array(char **arr)
 {
-	(void) pipex;
-	(void) av;
-	(void) envp;
-	(void) size;
-	return 4;
+	int	i;
+
+	i = -1;
+	while (arr[++i])
+		free(arr[i]);
+	free(arr);
+	return (0);
 }

@@ -16,9 +16,10 @@
 # include <stdlib.h>
 # include <stdio.h>
 # include <unistd.h>
-# include <bsd/string.h>
+# include <string.h>
 # include <stdarg.h>
 # include <fcntl.h>
+
 //for getnextline
 # ifndef BUFFER_SIZE
 #  define BUFFER_SIZE 5
