@@ -6,7 +6,7 @@
 /*   By: jpatrici <jpatrici@student.42porto.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/22 14:57:42 by jpatrici          #+#    #+#             */
-/*   Updated: 2025/01/22 16:56:12 by jpatrici         ###   ########.fr       */
+/*   Updated: 2025/02/03 16:59:30 by jpatrici         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,20 +20,24 @@ int	valid_input(t_pipex **pipex, char **av, char **envp, int size)
 	j = -1;
 	if (size != 5)
 		return (0);
-	if (access(av[1], F_OK) == -1)
+	if (access(av[1], R_OK) == -1)
 		return (0);
-	paths = NULL;	
+	if (av[1] == NULL || av[2] == NULL)
+		return (0);
+	paths = NULL;
 	while (envp[++j])
 		if (ft_strnstr(envp[j], "PATH=", 5))
 			paths = ft_split(&envp[j][5], ':');
+	if (!paths)
+		return (free_error(pipex, "ERROR"));
 	return (setcmds(pipex, av, paths, size));
 }
 
-int	setcmds(t_pipex  **pipex, char **av, char **paths, int size)
+int	setcmds(t_pipex **pipex, char **av, char **paths, int size)
 {
-	int	j;
-	int	n;
-	int	i;
+	int		j;
+	int		n;
+	int		i;
 	char	*temp;
 
 	n = 0;
@@ -49,20 +53,46 @@ int	setcmds(t_pipex  **pipex, char **av, char **paths, int size)
 			&& open((*pipex)->paths[n], O_DIRECTORY) == -1
 			&& ++n)
 			j = -1;
+		free_loop(temp, &(*pipex)->paths[n], &(*pipex)->cmds[n], j);
 	}
-	j = (((*pipex)->cmds[n + 1] = NULL) && free_array(paths));
-	free(temp);
-	if (access((*pipex)->paths[i - 1], F_OK) == -1)
+	free_array(paths);
+	if (!(*pipex)->paths[i - 1] || access((*pipex)->paths[i - 1], F_OK) == -1)
 		return (0);
 	return (((i == n)));
 }
 
 int	free_error(t_pipex **pipex, char *error)
 {
-	free_array((*pipex)->paths);
-	free_array((*pipex)->cmds);
-	perror(error);
-	return (0);
+	if ((*pipex)->paths)
+	{
+		free_array((*pipex)->paths);
+		free_array((*pipex)->cmds);
+	}
+	else
+	{
+		free((*pipex)->paths);
+		free((*pipex)->cmds);
+	}
+	free((*pipex));
+	if (error != NULL)
+		perror(error);
+	return (1);
+}
+
+void	free_loop(char *s, char **paths, char **cmds, int j)
+{
+	if (s)
+		free(s);
+	if (j != -1 && *paths)
+	{
+		free(*paths);
+		*paths = NULL;
+	}
+	if (j != -1 && *cmds)
+	{
+		free(*cmds);
+		*cmds = NULL;
+	}
 }
 
 int	free_array(char **arr)
@@ -70,8 +100,12 @@ int	free_array(char **arr)
 	int	i;
 
 	i = -1;
-	while (arr[++i])
+	while (arr[++i] != NULL)
+	{
 		free(arr[i]);
+		arr[i] = NULL;
+	}
 	free(arr);
+	arr = NULL;
 	return (0);
 }

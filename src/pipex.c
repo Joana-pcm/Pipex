@@ -6,7 +6,7 @@
 /*   By: jpatrici <jpatrici@student.42porto.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/27 10:19:35 by jpatrici          #+#    #+#             */
-/*   Updated: 2025/01/27 10:19:40 by jpatrici         ###   ########.fr       */
+/*   Updated: 2025/02/03 17:07:35 by jpatrici         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,7 @@
 
 int	exec(t_pipex **pipex, char **envp, int index)
 {
-	char **temp;
+	char	**temp;
 
 	temp = ft_split((*pipex)->cmds[index], ' ');
 	if (!temp)
@@ -23,46 +23,42 @@ int	exec(t_pipex **pipex, char **envp, int index)
 	return (0);
 }
 
-int	main_process(t_pipex **pipex, char **envp, int index, int size)
+int	main_process(t_pipex **pipex, char **envp)
 {
-	pid_t	pid;
-	pid_t	pid2;
+	pid_t	pid[2];
 	int		fd[2];
 
 	if (pipe(fd) == -1)
 		free_error(pipex, "ERROR");
-	pid = fork();
-	if (pid == -1)
-		exit(0);
-	if (pid > 0)
+	child_process(pipex, envp, fd, pid);
+	close(fd[1]);
+	close(fd[0]);
+	waitpid(pid[0], NULL, 0);
+	waitpid(pid[1], NULL, 0);
+	return (1);
+}
+
+int	child_process(t_pipex **pipex, char **envp,	int *fd, pid_t *pid)
+{
+	pid[0] = fork();
+	if (pid[0] == -1)
+		free_error(pipex, "no child process");
+	if (pid[0] > 0)
 	{
 		close(fd[0]);
 		dup2(fd[1], STDOUT_FILENO);
 		close(fd[1]);
-		exec(pipex, envp, index);
+		exec(pipex, envp, 0);
 	}
-	pid2 = fork();
-	if (pid2 == -1)
-		exit(0);
-	if (pid2 > 0)
+	pid[1] = fork();
+	if (pid[1] == -1)
+		free_error(pipex, "no child process");
+	if (pid[1] > 0)
 	{
 		dup2(fd[0], STDIN_FILENO);
 		close(fd[0]);
 		close(fd[1]);
-		exec(pipex, envp, index + 1);
+		exec(pipex, envp, 1);
 	}
-	close(fd[1]);
-	close(fd[0]);
-	waitpid(pid, NULL, 0);
-	waitpid(pid2, NULL, 0);
-	(void) size;
-	return (1);
+	return (0);
 }
-
-/*int	child_process(t_pipex **pipex, char **envp,int *fd, int index, int size)*/
-/*{*/
-/*	return(execve((*pipex)->paths[index], \*/
-/*	  ft_split((*pipex)->cmds[index], ' '), envp));*/
-/*	(void) size;*/
-/*	(void) fd;*/
-/*}*/
